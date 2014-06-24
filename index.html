@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<!--
+This program is licensed under the MIT License.
+Copyright 2014, aike (@aike1000)
+-->
+<head>
+	<meta charset="UTF-8">
+	<title>30 seconds timer</title>
+	<script type="text/javascript">
+		window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+		var button;
+		var disp;
+		var rev = location.search === '?countdown' ? true : false;
+		var sec = 0;
+		var id = null;
+
+		var ctx = new AudioContext();
+		var vol = ctx.createGain();
+		vol.gain.value = 0.2;
+		vol.connect(ctx.destination);
+
+		function play(n) {
+			for (var i = 0; i < n; i++) {
+				var osc = ctx.createOscillator();
+				osc.type = 'square';
+				osc.frequency.value = 2000;
+				osc.connect(vol);
+				osc.start(ctx.currentTime + 0.00 + i * 0.1);
+				osc.stop( ctx.currentTime + 0.05 + i * 0.1);
+			}
+		}
+
+		function starttimer() {
+			play(2);
+			button = document.getElementById('start');
+			disp = document.getElementById('disp');
+
+			if (id) {
+				clearInterval(id);
+				id = null;
+			}
+
+			if (button.innerText === 'STOP') {
+				button.innerText = 'START';
+				play(1);
+				return;
+			}
+
+			button.innerText = 'STOP';
+			play(2);
+			sec = 0;
+			disp.innerText = rev ? 30 - sec : sec;
+			id = setInterval(
+				function() {
+				console.log(disp.innerText);
+					sec++;
+					disp.innerHTML = rev ? 30 - sec : sec;
+					if (sec === 30) {
+						sec = -1;
+						play(2);
+					}
+				}, 1000);
+		}
+	</script>
+</head>
+<body>
+	<div id="disp" style="font-size:450px;text-align:center;">0</div>
+	<div style="position:absolute;left:10px;top:10px;">
+		<button id="start" onclick="starttimer();" style="width:150px;font-size:30px;">START</button>
+	</div>
+</body>
+</html>
