@@ -55,7 +55,6 @@ https://github.com/aike/30SecondsTimer
 			disp.innerText = rev ? 30 - sec : sec;
 			id = setInterval(
 				function() {
-				console.log(disp.innerText);
 					sec++;
 					disp.innerHTML = rev ? 30 - sec : sec;
 					if (sec === 30) {
